@@ -69,6 +69,6 @@ public class MovementScript : MonoBehaviour
         // freezing rotation so we can manually rotate (???)
         rb.freezeRotation = true;   // how does this not freeze the entire rotation?
         transform.Rotate(rotationThisFrame * Time.deltaTime * UnityEngine.Vector3.forward);
-        // rb.freezeRotation = false;  // unfreezing rotation so that physics system can take over.
+        rb.freezeRotation = false;  // unfreezing rotation so that physics system can take over.
     }
 }

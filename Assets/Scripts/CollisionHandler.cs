@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement; 
 
 // used on player or other objs? on player
 public class CollisionHandler : MonoBehaviour
@@ -18,10 +19,28 @@ public class CollisionHandler : MonoBehaviour
                 break; 
             case "Finish":
                 Debug.Log("Finished!");
+                NextLevel();
                 break;    
             default:
                 Debug.Log("You're dead!");
+                // SceneManager.LoadScene("Scenes/Sandbox");
+                ReloadLevel();
                 break;    
         }
+    }
+
+    void ReloadLevel() {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;   // get the index of the active scene.
+        SceneManager.LoadScene(currentSceneIndex);
+    }
+
+    void NextLevel() {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;   // get the index of the NEXT scene.
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        if (nextSceneIndex == SceneManager.sceneCountInBuildSettings) {
+            nextSceneIndex = 0;
+        }
+        SceneManager.LoadScene(nextSceneIndex);
     }
 }
