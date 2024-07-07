@@ -6,6 +6,16 @@ public class CollisionHandler : MonoBehaviour
 {
     [SerializeField] float delay = 2f;
 
+    [SerializeField] AudioClip explode;
+    [SerializeField] AudioClip success;
+
+    private AudioSource audioSource; 
+
+    void Start()
+    {
+        audioSource = GetComponent<AudioSource>();  // Cache our audioSource. This is a component that's left manually empty.
+    }
+
     /// OnCollisionEnter is called when this collider/rigidbody has begun
     /// touching another rigidbody/collider.
     /// </summary>
@@ -17,10 +27,12 @@ public class CollisionHandler : MonoBehaviour
                 Debug.Log("At starting pad!");
                 break; 
             case "Finish":
+                audioSource.PlayOneShot(success);
                 Debug.Log("Finished!");
                 NextLevelSequence();
                 break;    
             default:
+                audioSource.PlayOneShot(explode);
                 Debug.Log("You're dead!");
                 StartCrashSequence();
                 break;    

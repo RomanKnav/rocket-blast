@@ -7,15 +7,17 @@ public class MovementScript : MonoBehaviour
 {
     [SerializeField] float thrust = 1000f;
     [SerializeField] float rotate = 500f;
+    [SerializeField] AudioClip rocketEngine;    
 
     private Rigidbody rb;    // MEMBER var: available everywhere in the class.
-    private AudioSource audioSource;
+    private AudioSource audioSource;        // AudioClip is what is serialized, and AudioSource is what's used in the code. 
+
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        audioSource = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();  // this is a component that's left manually empty.
     }
 
     // Update is called once per frame
@@ -41,7 +43,7 @@ public class MovementScript : MonoBehaviour
 
             // only plays AFTER key is released:
             if (!audioSource.isPlaying) {
-                audioSource.Play();
+                audioSource.PlayOneShot(rocketEngine);
             }
            
         } else {

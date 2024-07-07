@@ -608,6 +608,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rocket
       objectReference: {fileID: 0}
+    - target: {fileID: 6418479884609419553, guid: 40c2efc06e52a3345b192396a608130c, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7362039286674070631, guid: 40c2efc06e52a3345b192396a608130c, type: 3}
+      propertyPath: explode
+      value: 
+      objectReference: {fileID: 8300000, guid: 47d00e255c819eb45b9d2c31e39ab927, type: 3}
+    - target: {fileID: 7362039286674070631, guid: 40c2efc06e52a3345b192396a608130c, type: 3}
+      propertyPath: success
+      value: 
+      objectReference: {fileID: 8300000, guid: 6639407efbbe0b2408ab59b6030025f5, type: 3}
     - target: {fileID: 8547183757828731864, guid: 40c2efc06e52a3345b192396a608130c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -39.33
@@ -648,6 +660,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8907554161347006323, guid: 40c2efc06e52a3345b192396a608130c, type: 3}
+      propertyPath: rocketEngine
+      value: 
+      objectReference: {fileID: 8300000, guid: 3428fd44b38ca724ca0591b874ecd688, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
