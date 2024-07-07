@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 // used on player or other objs? on player
 public class CollisionHandler : MonoBehaviour
 {
+    [SerializeField] float delay = 2f;
+
     /// OnCollisionEnter is called when this collider/rigidbody has begun
     /// touching another rigidbody/collider.
     /// </summary>
@@ -11,22 +13,29 @@ public class CollisionHandler : MonoBehaviour
     private void OnCollisionEnter(Collision other)
     {
         switch(other.gameObject.tag) {
-            case "Fuel":
-                Debug.Log("Obtained fuel!");
-                break; 
             case "Friendly":
                 Debug.Log("At starting pad!");
                 break; 
             case "Finish":
                 Debug.Log("Finished!");
-                NextLevel();
+                NextLevelSequence();
                 break;    
             default:
                 Debug.Log("You're dead!");
-                // SceneManager.LoadScene("Scenes/Sandbox");
-                ReloadLevel();
+                StartCrashSequence();
                 break;    
         }
+    }
+
+    void StartCrashSequence() {
+        GetComponent<MovementScript>().enabled = false;
+        // ReloadLevel();
+        Invoke("ReloadLevel", delay);
+    }
+
+    void NextLevelSequence() {
+        GetComponent<MovementScript>().enabled = false;
+        Invoke("NextLevel", delay);
     }
 
     void ReloadLevel() {
