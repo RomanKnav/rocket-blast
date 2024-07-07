@@ -9,11 +9,13 @@ public class MovementScript : MonoBehaviour
     [SerializeField] float rotate = 500f;
 
     private Rigidbody rb;    // MEMBER var: available everywhere in the class.
+    private AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -27,6 +29,7 @@ public class MovementScript : MonoBehaviour
     // actual bug: we don't wanna rotate left/right at the same time.
     void ProcessThrust()
     {
+        // remember: true WHILE key is pressed down:
         if (Input.GetKey(KeyCode.Space)) {
             Debug.Log("Pressed Space -Thrusting");
 
@@ -35,6 +38,14 @@ public class MovementScript : MonoBehaviour
 
             rb.AddRelativeForce(thrust * Time.deltaTime * UnityEngine.Vector3.up);
             // rb.AddRelativeForce(UnityEngine.Vector3.up);
+
+            // only plays AFTER key is released:
+            if (!audioSource.isPlaying) {
+                audioSource.Play();
+            }
+           
+        } else {
+            audioSource.Stop();
         }
     }
 
