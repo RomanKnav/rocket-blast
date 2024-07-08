@@ -9,6 +9,10 @@ public class MovementScript : MonoBehaviour
     [SerializeField] float rotate = 500f;
     [SerializeField] AudioClip rocketEngine;    
 
+    [SerializeField] ParticleSystem thrustParticles;
+    [SerializeField] ParticleSystem leftParticles;
+    [SerializeField] ParticleSystem rightParticles;
+
     private Rigidbody rb;    // MEMBER var: available everywhere in the class.
     private AudioSource audioSource;        // AudioClip is what is serialized, and AudioSource is what's used in the code. 
 
@@ -35,6 +39,10 @@ public class MovementScript : MonoBehaviour
         if (Input.GetKey(KeyCode.Space)) {
             Debug.Log("Pressed Space -Thrusting");
 
+            if (!thrustParticles.isPlaying) {
+                thrustParticles.Play();
+            }
+
             // applies force RELATIVE to obj's position. Example, if facing right and pressed thrust, will move right instead of up.
             // rb.AddRelativeForce(0, 1, 0);   // takes a vector3 as arg. Can also be written as:
 
@@ -48,21 +56,34 @@ public class MovementScript : MonoBehaviour
            
         } else {
             audioSource.Stop();
+            thrustParticles.Stop();
         }
     }
 
+    // IMPLEMENT FUCKING BOOSTERS HERE:
     void ProcessRotation() {
 
         // only the z-axis tilt should change (for ship to tilt forward/back):
         if (Input.GetKey(KeyCode.A))
         {
             Debug.Log("Pressed A -Rotate Left");
+            if (!leftParticles.isPlaying) {
+                leftParticles.Play();
+            }
             ApplyRotation(rotate);
         }
 
         else if (Input.GetKey(KeyCode.D)) {     // ensures D is pressed only if A is not pressed
             Debug.Log("Pressed D -Rotate Right");
+            if (!rightParticles.isPlaying) {
+                rightParticles.Play();
+            }
             ApplyRotation(-rotate);
+        }
+
+        else {
+            leftParticles.Stop();
+            rightParticles.Stop();
         }
     }
 
