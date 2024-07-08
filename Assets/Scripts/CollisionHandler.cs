@@ -9,7 +9,12 @@ public class CollisionHandler : MonoBehaviour
     [SerializeField] AudioClip explode;
     [SerializeField] AudioClip success;
 
+    [SerializeField] ParticleSystem explodeParticles;
+    [SerializeField] ParticleSystem successParticles;
+
     private AudioSource audioSource; 
+
+    bool isTransitioning = false;
 
     void Start()
     {
@@ -22,30 +27,41 @@ public class CollisionHandler : MonoBehaviour
     /// <param name="other">The Collision data associated with this collision.</param>
     private void OnCollisionEnter(Collision other)
     {
+        // tutorial's MUCH cleaner approach: 
+        // this ensures that all other logic is ignored if isTransitioning is true.
+        if (isTransitioning) {
+            return;
+        }
+
         switch(other.gameObject.tag) {
             case "Friendly":
                 Debug.Log("At starting pad!");
                 break; 
-            case "Finish":
-                audioSource.PlayOneShot(success);
-                Debug.Log("Finished!");
-                NextLevelSequence();
-                break;    
+            case "Finish":                
+                successParticles.Play();
+                NextLevelSequence();               
+                break;  
+            
             default:
-                audioSource.PlayOneShot(explode);
-                Debug.Log("You're dead!");
-                StartCrashSequence();
+                explodeParticles.Play();
+                StartCrashSequence();               
                 break;    
         }
     }
 
     void StartCrashSequence() {
+        isTransitioning = true;
+        audioSource.Stop();     // current audioSource (rocket engine) stops 
+        audioSource.PlayOneShot(explode);
         GetComponent<MovementScript>().enabled = false;
         // ReloadLevel();
         Invoke("ReloadLevel", delay);
     }
 
     void NextLevelSequence() {
+        isTransitioning = true;
+        audioSource.Stop();
+        audioSource.PlayOneShot(success);
         GetComponent<MovementScript>().enabled = false;
         Invoke("NextLevel", delay);
     }
