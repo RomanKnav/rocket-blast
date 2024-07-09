@@ -8,14 +8,12 @@ public class MovementScript : MonoBehaviour
     [SerializeField] float thrust = 1000f;
     [SerializeField] float rotate = 500f;
     [SerializeField] AudioClip rocketEngine;    
-
     [SerializeField] ParticleSystem thrustParticles;
     [SerializeField] ParticleSystem leftParticles;
     [SerializeField] ParticleSystem rightParticles;
 
     private Rigidbody rb;    // MEMBER var: available everywhere in the class.
     private AudioSource audioSource;        // AudioClip is what is serialized, and AudioSource is what's used in the code. 
-
 
     // Start is called before the first frame update
     void Start()
@@ -31,63 +29,90 @@ public class MovementScript : MonoBehaviour
         ProcessRotation();
     }
 
-    // THERE'S A BUG IN HERE (I think: the log statements only log once?)
-    // actual bug: we don't wanna rotate left/right at the same time.
+    // THRUSTING CRAP:
     void ProcessThrust()
     {
         // remember: true WHILE key is pressed down:
-        if (Input.GetKey(KeyCode.Space)) {
-            Debug.Log("Pressed Space -Thrusting");
-
-            if (!thrustParticles.isPlaying) {
-                thrustParticles.Play();
-            }
-
-            // applies force RELATIVE to obj's position. Example, if facing right and pressed thrust, will move right instead of up.
-            // rb.AddRelativeForce(0, 1, 0);   // takes a vector3 as arg. Can also be written as:
-
-            rb.AddRelativeForce(thrust * Time.deltaTime * UnityEngine.Vector3.up);
-            // rb.AddRelativeForce(UnityEngine.Vector3.up);
-
-            // only plays AFTER key is released:
-            if (!audioSource.isPlaying) {
-                audioSource.PlayOneShot(rocketEngine);
-            }
-           
-        } else {
-            audioSource.Stop();
-            thrustParticles.Stop();
+        if (Input.GetKey(KeyCode.Space))
+        {
+            StartThrust();
+        }
+        else
+        {
+            StopThrusting();
         }
     }
 
-    // IMPLEMENT FUCKING BOOSTERS HERE:
-    void ProcessRotation() {
+    void StartThrust()
+    {
+        // applies force RELATIVE to obj's position. Example, if facing right and pressed thrust, will move right instead of up.
+        // rb.AddRelativeForce(0, 1, 0);   // takes a vector3 as arg. Can also be written as:
 
-        // only the z-axis tilt should change (for ship to tilt forward/back):
+        rb.AddRelativeForce(thrust * Time.deltaTime * UnityEngine.Vector3.up);
+        // rb.AddRelativeForce(UnityEngine.Vector3.up);
+
+        // only plays AFTER key is released:
+        if (!audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(rocketEngine);
+        }
+        if (!thrustParticles.isPlaying)
+        {
+            thrustParticles.Play();
+        }
+    }
+
+    void StopThrusting()
+    {
+        audioSource.Stop();
+        thrustParticles.Stop();
+    }
+
+    // ROTATING CRAP:
+    void ProcessRotation() {
         if (Input.GetKey(KeyCode.A))
         {
-            Debug.Log("Pressed A -Rotate Left");
-            if (!leftParticles.isPlaying) {
-                leftParticles.Play();
-            }
-            ApplyRotation(rotate);
+            ProcessLeft();
         }
 
-        else if (Input.GetKey(KeyCode.D)) {     // ensures D is pressed only if A is not pressed
-            Debug.Log("Pressed D -Rotate Right");
-            if (!rightParticles.isPlaying) {
-                rightParticles.Play();
-            }
-            ApplyRotation(-rotate);
+        else if (Input.GetKey(KeyCode.D))
+        {     // ensures D is pressed only if A is not pressed
+            ProcessRight();
         }
 
-        else {
-            leftParticles.Stop();
-            rightParticles.Stop();
+        else
+        {
+            StopParticles();
         }
     }
 
-    private void ApplyRotation(float rotationThisFrame)
+    void ProcessRight()
+    {
+        Debug.Log("Pressed D -Rotate Right");
+        if (!rightParticles.isPlaying)
+        {
+            rightParticles.Play();
+        }
+        ApplyRotation(-rotate);
+    }
+
+    void ProcessLeft()
+    {
+        Debug.Log("Pressed A -Rotate Left");
+        if (!leftParticles.isPlaying)
+        {
+            leftParticles.Play();
+        }
+        ApplyRotation(rotate);
+    }
+
+    private void StopParticles()
+    {
+        leftParticles.Stop();
+        rightParticles.Stop();
+    }
+
+    void ApplyRotation(float rotationThisFrame)
     {
         // freezing rotation so we can manually rotate (???)
         rb.freezeRotation = true;   // how does this not freeze the entire rotation?

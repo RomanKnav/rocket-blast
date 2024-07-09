@@ -14,22 +14,56 @@ public class CollisionHandler : MonoBehaviour
 
     private AudioSource audioSource; 
 
-    bool isTransitioning = false;
+    bool isTransitioning = false;   // used at gameOver or success
+
+    bool uncollidable = false;
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();  // Cache our audioSource. This is a component that's left manually empty.
     }
 
+    void Update() 
+    {
+        RespondToDebugKeys();
+    }
+
+    void RespondToDebugKeys() {
+        if (Input.GetKeyDown(KeyCode.L)) {
+            NextLevel();
+        }
+        else if (Input.GetKeyDown(KeyCode.C)) {
+            ToggleCollision();                      // he simply toggles a bool instead (collisionDisable = !collisionDisable)
+        }
+    }
+
+    void ToggleCollision() 
+    {
+        if (uncollidable == false) {
+            uncollidable = true;
+            Debug.Log("Collision Disabled!");
+            GetComponent<CapsuleCollider>().enabled = false; 
+        }
+        else {
+            uncollidable = false;
+            Debug.Log("Collision ENABLED!");
+            GetComponent<CapsuleCollider>().enabled = true; 
+        }
+    }
+
+
+    // the box collider and capsule collider must be disabled if "c" is pressed. 
+
     /// OnCollisionEnter is called when this collider/rigidbody has begun
     /// touching another rigidbody/collider.
     /// </summary>
     /// <param name="other">The Collision data associated with this collision.</param>
-    private void OnCollisionEnter(Collision other)
+    /// UNDERSTOOD: actual collider/rigidbody component not actually used here. 
+    void OnCollisionEnter(Collision other)
     {
         // tutorial's MUCH cleaner approach: 
         // this ensures that all other logic is ignored if isTransitioning is true.
-        if (isTransitioning) {
+        if (isTransitioning) {      // for collision cheat, he put: isTransitioning || collisionDisabled
             return;
         }
 
