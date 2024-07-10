@@ -22,18 +22,21 @@ public class Oscillator : MonoBehaviour
     void Update()
     {
         // continually growing over time:
-        float cycles = Time.time / period;      // if time is 10 secs and period is 2, we'll have 5 cycles by then.
+        // if (period != 0f) {  not good idea to compare 2 floats with eachother, as even a tiny difference could return true
+        if (period > Mathf.Epsilon) {  // Mathf.Epsilon is the TINIEST possible float num (absolutely 0)
+            float cycles = Time.time / period;      // if time is 10 secs and period is 2, we'll have 5 cycles by then.
 
-        const float tau = Mathf.PI * 2; 
-        float rawSinWave = Mathf.Sin(cycles * tau);         // accepts input angle, in RADIANS. Returns value between 1 and -1.
+            const float tau = Mathf.PI * 2; 
+            float rawSinWave = Mathf.Sin(cycles * tau);         // accepts input angle, in RADIANS. Returns value between 1 and -1.
 
-        movementFactor = (rawSinWave + 1f) / 2f;                  // we want to go from 0-1 instead of -1 - 1. This is turn is /2 so we finally get value that is 0-1.
+            movementFactor = (rawSinWave + 1f) / 2f;                  // we want to go from 0-1 instead of -1 - 1. This is turn is /2 so we finally get value that is 0-1.
 
-        Vector3 offset = movementVector * movementFactor;     // if 1st is (10, 0, 0) and 2nd is 0.5, offset is (5, 0, 0)
-        // Vector3 newPosition = startingPosition + offset;                                            // define new position of obj that's offset from original position
-        
-        // transform.position += Vector3.right;
-        // why doesn't transform.position += offset; work the same? Because that is a DYNAMIC value, it'll keep moving right. The other one, though, is static. 
-        transform.position = startingPosition + offset;
+            Vector3 offset = movementVector * movementFactor;     // if 1st is (10, 0, 0) and 2nd is 0.5, offset is (5, 0, 0)
+            // Vector3 newPosition = startingPosition + offset;                                            // define new position of obj that's offset from original position
+            
+            // transform.position += Vector3.right;
+            // why doesn't transform.position += offset; work the same? Because that is a DYNAMIC value, it'll keep moving right. The other one, though, is static. 
+            transform.position = startingPosition + offset;
+        }
     }
 }
